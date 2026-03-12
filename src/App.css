@@ -1,0 +1,569 @@
+/* ============================================================
+   RESET & TOKENS
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:         #09090f;
+  --bg-alt:     #0e0e18;
+  --bg-card:    #13131f;
+  --border:     #1c1c2e;
+  --accent:     #7c3aed;
+  --accent-lit: #a855f7;
+  --cyan:       #22d3ee;
+  --text:       #e2e8f0;
+  --text-dim:   #94a3b8;
+  --text-muted: #475569;
+  --radius:     12px;
+  --font:       'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 4rem;
+  background: rgba(9, 9, 15, 0.75);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent-lit), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.25rem;
+}
+
+.nav-links a {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--accent-lit); }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  padding: 100px 4rem 4rem;
+  overflow: hidden;
+}
+
+/* decorative gradient blobs */
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+.glow-1 {
+  width: 500px; height: 500px;
+  top: -150px; right: -100px;
+  background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+}
+.glow-2 {
+  width: 300px; height: 300px;
+  bottom: 60px; left: 5%;
+  background: radial-gradient(circle, #22d3ee 0%, transparent 70%);
+}
+
+/* left column: text */
+.hero-text {
+  flex: 1;
+  max-width: 520px;
+  position: relative;
+  z-index: 2;
+}
+
+.greeting {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.4rem;
+}
+
+.hero-name {
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 900;
+  line-height: 1.25;
+  padding-bottom: 0.05em;
+  background: linear-gradient(135deg, #fff 30%, var(--accent-lit) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.4rem;
+}
+
+.hero-title {
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  font-weight: 500;
+  color: var(--accent-lit);
+  margin-bottom: 1.5rem;
+}
+
+.hero-desc {
+  font-size: 0.97rem;
+  color: var(--text-dim);
+  line-height: 1.85;
+  margin-bottom: 2.5rem;
+  max-width: 440px;
+}
+
+.hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+/* right column: card */
+.hero-card-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+  min-height: 420px;
+  padding-top: 10px;
+}
+
+/* ============================================================
+   PENDULUM
+   ============================================================ */
+.pendulum-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 220px;
+}
+
+.pivot-pin {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%,
+    #e2e8f0 0%, #94a3b8 35%, #64748b 70%, #1e293b 100%);
+  box-shadow:
+    0 3px 10px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,255,255,.4);
+  z-index: 10;
+}
+/* dark centre hole — makes it look like a ring/hook */
+.pivot-pin::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: #07070d;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.8);
+}
+
+.pendulum-arm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: top center;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.pendulum-arm:active { cursor: grabbing; }
+
+/* lanyard is now an SVG — no CSS needed for the old div */
+.lanyard-svg {
+  display: block;
+  overflow: visible;
+}
+
+/* ============================================================
+   ID CARD
+   ============================================================ */
+.id-card {
+  width: 190px;
+  background: #10101c;
+  border-radius: 14px;
+  border: 1px solid rgba(124,58,237,.35);
+  padding: 0;          /* no global padding — photo is full-bleed */
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 25px 60px rgba(0,0,0,.55),
+    0 0 0 1px rgba(255,255,255,.04);
+  cursor: default;
+  transition: box-shadow 0.3s;
+}
+.id-card:hover {
+  box-shadow:
+    0 30px 70px rgba(0,0,0,.6),
+    0 0 0 1px rgba(124,58,237,.5),
+    0 0 30px rgba(124,58,237,.15),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+/* full-width photo — 2/3 of card height */
+.card-photo-area {
+  width: 100%;
+  height: 260px;   /* ~2/3 of total card */
+  overflow: hidden;
+  position: relative;
+  border-radius: 14px 14px 0 0;
+}
+
+.card-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+/* purple text banner overlaid at the top of the photo */
+.card-photo-overlay {
+  position: absolute;
+  top: 70%;
+  left: 0;
+  right: 0;
+  padding: 0.55rem 0.75rem 0.5rem;
+  background: rgba(109, 40, 217, 0.82);
+  backdrop-filter: blur(2px);
+  margin: 0.75rem;
+  border-radius: 0.5rem;;
+  text-align: center;
+  align-items: center;
+}
+
+.card-photo-overlay .card-name {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.1rem;
+  line-height: 1.2;
+}
+
+.card-photo-overlay .card-role {
+  font-size: 0.58rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0;
+}
+
+/* metal eyelet grommet where cloth strap threads through */
+.card-hole {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  /* outer ring: gunmetal / silver */
+  background: radial-gradient(circle at 35% 30%,
+    #cbd5e1 0%, #94a3b8 30%, #475569 65%, #1e293b 100%);
+  box-shadow:
+    0 2px 6px rgba(0,0,0,.7),
+    inset 0 1px 0 rgba(255,255,255,.2);
+  z-index: 5;
+}
+/* inner hole */
+.card-hole::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: #07070d;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.9);
+}
+
+.card-info {
+  text-align: center;
+  padding: 0.65rem 0.9rem 0.5rem;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.card-name {
+  font-size: 0.98rem;
+  font-weight: 800;
+  align-items: end;
+  color: #fff;
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.01em;
+}
+
+.card-role {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-lit);
+  margin-bottom: 0.65rem;
+}
+
+.card-divider {
+  height: 1px;
+  background: rgba(255,255,255,.07);
+  margin-bottom: 0.5rem;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}
+
+.card-barcode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  padding: 0.55rem 0.75rem;
+  background: #0d0d18;
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+
+.bar {
+  width: 2px;
+  background: rgba(226,232,240,.7);
+  border-radius: 1px;
+}
+
+/* every 4th bar is wider — mimics real barcode guard bars */
+.bar:nth-child(4n) {
+  width: 3.5px;
+  background: rgba(226,232,240,.9);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn-primary {
+  display: inline-block;
+  padding: 0.7rem 1.6rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent-lit));
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.03em;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(124,58,237,.4);
+}
+
+.btn-outline {
+  display: inline-block;
+  padding: 0.7rem 1.6rem;
+  border: 1px solid var(--accent);
+  color: var(--accent-lit);
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-outline:hover {
+  background: rgba(124,58,237,.1);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.section { padding: 6rem 4rem; }
+.section-dark { background: var(--bg-alt); }
+
+.section-inner { max-width: 1060px; margin: 0 auto; }
+
+.contact-section .section-inner { text-align: center; }
+.contact-section .section-title::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.section-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  margin-bottom: 1.4rem;
+  position: relative;
+  display: inline-block;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; left: 0;
+  width: 38px; height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--cyan));
+}
+
+.section-text {
+  font-size: 0.97rem;
+  color: var(--text-dim);
+  line-height: 1.85;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+/* ── Skills ── */
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 2rem;
+}
+
+.skill-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  background: rgba(124,58,237,.1);
+  border: 1px solid rgba(124,58,237,.28);
+  border-radius: 100px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--accent-lit);
+  transition: all 0.2s;
+  cursor: default;
+}
+.skill-tag:hover {
+  background: rgba(124,58,237,.2);
+  border-color: var(--accent-lit);
+  transform: translateY(-1px);
+}
+
+.skill-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ── Projects ── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.4rem;
+  margin-top: 2rem;
+}
+
+.project-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s;
+}
+.project-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(124,58,237,.45);
+  box-shadow: 0 16px 40px rgba(0,0,0,.35);
+}
+
+.project-thumb {
+  height: 110px;
+  background: linear-gradient(135deg,
+    rgba(124,58,237,.2) 0%,
+    rgba(34,211,238,.1) 100%
+  );
+  border-bottom: 1px solid var(--border);
+}
+
+.project-body { padding: 1.1rem 1.2rem 1.2rem; }
+.project-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.project-body p  { font-size: 0.83rem; color: var(--text-dim); line-height: 1.65; margin-bottom: 0.9rem; }
+
+.tech-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+
+.tech-tag {
+  padding: 0.18rem 0.55rem;
+  background: rgba(34,211,238,.08);
+  border: 1px solid rgba(34,211,238,.2);
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--cyan);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 800px) {
+  .nav  { padding: 1rem 1.5rem; }
+  .nav-links { gap: 1.25rem; }
+  .nav-links a { font-size: 0.78rem; }
+
+  .hero {
+    flex-direction: column;
+    padding: 100px 1.75rem 3rem;
+    text-align: center;
+  }
+  .hero-cta { justify-content: center; }
+  .hero-desc { margin-left: auto; margin-right: auto; }
+
+  .hero-card-area {
+    width: 100%;
+    min-height: 360px;
+  }
+
+  .section { padding: 4rem 1.75rem; }
+}
+
+@media (max-width: 480px) {
+  .nav-links { display: none; }
+  .hero-name { font-size: 2.2rem; }
+}
